@@ -6,7 +6,7 @@ const apiInstance = axios.create({
         "Content-Type": "application/json"
     }
 })
-export default apiInstance;
+
 // interceptors
 
 apiInstance.interceptors.request.use((config) => {
@@ -21,6 +21,26 @@ apiInstance.interceptors.request.use((config) => {
 }, (error) => {
     // Runs if request error happens
     return Promise.reject(error);
-})
+});
+
+export const productAPI = {
+    getAll: (params = {}) => apiInstance.get('/products', {params}),
+    getById: (id) => apiInstance.get(`/products/${id}`),
+    getCategories: () => apiInstance.get('/products/categories'),
+    getByCategory: (category) => apiInstance.get(`/products/categories/${category}`),
+
+    // Crud
+
+    create: (product) => apiInstance.post('/product/add', product),
+    update: (id, product) => apiInstance.put(`/products/${id}`, product),
+    delete: (id) => apiInstance.delete(`/products/${id}`),
+};
+
+export const AuthAPI = {
+    login: (credential) => apiInstance.post('/auth/login', credential),
+    getUser: () => apiInstance.get('/auth/me')
+};
+
+export default apiInstance;
 
 
