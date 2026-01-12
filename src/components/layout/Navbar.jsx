@@ -19,9 +19,9 @@ import {
   Menu as MenuIcon,
 } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
-import { useCart } from '../../contexts/CartContext';
-import { useWishlist } from '../../contexts/WishlistContext';
+import { useAuth } from '../../hooks/contexts/AuthContext';
+import { useCart } from '../../hooks/contexts/CartContexts';
+import { useWishlist } from '../../hooks/contexts/WishlistContext';
 
 const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
