@@ -13,9 +13,16 @@ import {
   Select,
   Box,
   IconButton,
+  Divider,
+  Paper,
   Alert,
+  Collapse,
 } from '@mui/material';
-import { Close as CloseIcon, AddPhotoAlternate } from '@mui/icons-material';
+import { 
+  Close as CloseIcon, 
+  AddPhotoAlternate,
+  Error as ErrorIcon 
+} from '@mui/icons-material';
 
 const ProductForm = ({ open, onClose, onSubmit, initialData, isEditing }) => {
   const [formData, setFormData] = useState({
@@ -31,6 +38,8 @@ const ProductForm = ({ open, onClose, onSubmit, initialData, isEditing }) => {
   });
 
   const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
+  const [formError, setFormError] = useState('');
   const [categories] = useState([
     'smartphones', 'laptops', 'fragrances', 'skincare', 'groceries',
     'home-decoration', 'furniture', 'tops', 'womens-dresses',
@@ -47,57 +56,138 @@ const ProductForm = ({ open, onClose, onSubmit, initialData, isEditing }) => {
   ];
 
   useEffect(() => {
-    const defaultFormData = {
-      title: '',
-      description: '',
-      price: '',
-      discountPercentage: '',
-      rating: '',
-      stock: '',
-      brand: '',
-      category: '',
-      thumbnail: '',
-    };
-
-    const newFormData = initialData ? {
-      title: initialData.title || '',
-      description: initialData.description || '',
-      price: initialData.price || '',
-      discountPercentage: initialData.discountPercentage || '',
-      rating: initialData.rating || '',
-      stock: initialData.stock || '',
-      brand: initialData.brand || '',
-      category: initialData.category || '',
-      thumbnail: initialData.thumbnail || '',
-    } : defaultFormData;
-
-    setFormData(newFormData);
+    if (initialData && isEditing) {
+      setFormData({
+        title: initialData.title || '',
+        description: initialData.description || '',
+        price: initialData.price || '',
+        discountPercentage: initialData.discountPercentage || '',
+        rating: initialData.rating || '',
+        stock: initialData.stock || '',
+        brand: initialData.brand || '',
+        category: initialData.category || '',
+        thumbnail: initialData.thumbnail || '',
+      });
+    } else {
+      setFormData({
+        title: '',
+        description: '',
+        price: '',
+        discountPercentage: '',
+        rating: '',
+        stock: '',
+        brand: '',
+        category: '',
+        thumbnail: '',
+      });
+    }
     setErrors({});
-  }, [initialData, open]);
+    setTouched({});
+    setFormError('');
+  }, [open, initialData, isEditing]);
+
+  const validateField = (name, value) => {
+    let error = '';
+    
+    switch (name) {
+      case 'title':
+        if (!value.trim()) error = 'Please enter a product title';
+        else if (value.trim().length < 3) error = 'Title must be at least 3 characters';
+        else if (value.trim().length > 100) error = 'Title cannot exceed 100 characters';
+        break;
+      
+      case 'description':
+        if (!value.trim()) error = 'Please enter a product description';
+        else if (value.trim().length < 10) error = 'Description must be at least 10 characters';
+        else if (value.trim().length > 500) error = 'Description cannot exceed 500 characters';
+        break;
+      
+      case 'price':
+        if (!value) error = 'Please enter a price';
+        else if (isNaN(value) || parseFloat(value) <= 0) error = 'Price must be greater than 0';
+        else if (parseFloat(value) > 1000000) error = 'Price cannot exceed $1,000,000';
+        break;
+      
+      case 'discountPercentage':
+        if (value && (isNaN(value) || parseFloat(value) < 0 || parseFloat(value) > 100)) {
+          error = 'Discount must be between 0 and 100';
+        }
+        break;
+      
+      case 'rating':
+        if (value && (isNaN(value) || parseFloat(value) < 0 || parseFloat(value) > 5)) {
+          error = 'Rating must be between 0 and 5';
+        }
+        break;
+      
+      case 'stock':
+        if (!value) error = 'Please enter stock quantity';
+        else if (isNaN(value) || parseInt(value) < 0) error = 'Stock must be 0 or more';
+        else if (parseInt(value) > 100000) error = 'Stock cannot exceed 100,000';
+        break;
+      
+      case 'brand':
+        if (!value) error = 'Please select a brand';
+        break;
+      
+      case 'category':
+        if (!value) error = 'Please select a category';
+        break;
+      
+      case 'thumbnail':
+        if (!value.trim()) error = 'Please enter an image URL';
+        else {
+          try {
+            const url = new URL(value);
+            if (!['http:', 'https:'].includes(url.protocol)) {
+              error = 'URL must start with http:// or https://';
+            }
+          } catch {
+            error = 'Please enter a valid URL';
+          }
+        }
+        break;
+      
+      default:
+        break;
+    }
+    
+    return error;
+  };
 
   const validateForm = () => {
     const newErrors = {};
+    let isValid = true;
     
-    if (!formData.title.trim()) newErrors.title = 'Title is required';
-    if (!formData.description.trim()) newErrors.description = 'Description is required';
-    if (!formData.price || formData.price <= 0) newErrors.price = 'Price must be greater than 0';
-    if (formData.discountPercentage < 0 || formData.discountPercentage > 100) {
-      newErrors.discountPercentage = 'Discount must be between 0 and 100';
-    }
-    if (!formData.rating || formData.rating < 0 || formData.rating > 5) {
-      newErrors.rating = 'Rating must be between 0 and 5';
-    }
-    if (!formData.stock || formData.stock < 0) newErrors.stock = 'Stock must be non-negative';
-    if (!formData.brand) newErrors.brand = 'Brand is required';
-    if (!formData.category) newErrors.category = 'Category is required';
-    if (!formData.thumbnail.trim()) newErrors.thumbnail = 'Thumbnail URL is required';
+    Object.keys(formData).forEach(field => {
+      const error = validateField(field, formData[field]);
+      if (error) {
+        newErrors[field] = error;
+        isValid = false;
+      }
+    });
     
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    
+    // Mark all fields as touched to show errors
+    const allTouched = {};
+    Object.keys(formData).forEach(field => {
+      allTouched[field] = true;
+    });
+    setTouched(allTouched);
+    
+    if (!isValid) {
+      setFormError('Please fix the errors in the form');
+    } else {
+      setFormError('');
+    }
+    
+    return isValid;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
     if (validateForm()) {
       onSubmit({
         ...formData,
@@ -115,9 +205,45 @@ const ProductForm = ({ open, onClose, onSubmit, initialData, isEditing }) => {
       ...prev,
       [name]: value
     }));
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+    
+    // Validate field on change if it's been touched
+    if (touched[name]) {
+      const error = validateField(name, value);
+      setErrors(prev => ({ ...prev, [name]: error }));
+      if (formError && !error) {
+        // Clear form error if this field is now valid
+        const hasOtherErrors = Object.keys(errors).some(
+          key => key !== name && errors[key]
+        );
+        if (!hasOtherErrors) {
+          setFormError('');
+        }
+      }
+    }
+  };
+
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    
+    // Mark field as touched
+    setTouched(prev => ({ ...prev, [name]: true }));
+    
+    // Validate field
+    const error = validateField(name, value);
+    setErrors(prev => ({ ...prev, [name]: error }));
+  };
+
+  const getFieldError = (fieldName) => {
+    return touched[fieldName] ? errors[fieldName] : '';
+  };
+
+  const handleImageError = (e) => {
+    e.target.style.display = 'none';
+    if (touched.thumbnail && !errors.thumbnail) {
+      setErrors(prev => ({ 
+        ...prev, 
+        thumbnail: 'Image failed to load. Please check the URL.' 
+      }));
     }
   };
 
@@ -125,31 +251,68 @@ const ProductForm = ({ open, onClose, onSubmit, initialData, isEditing }) => {
     <Dialog
       open={open}
       onClose={onClose}
-      maxWidth="md"
+      maxWidth="sm"
       fullWidth
       PaperProps={{
-        sx: { borderRadius: 2 }
+        sx: { 
+          borderRadius: 2,
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+          maxHeight: '90vh',
+          overflow: 'auto'
+        }
       }}
     >
-      <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        {isEditing ? 'Edit Product' : 'Add New Product'}
-        <IconButton onClick={onClose} size="small">
+      <DialogTitle sx={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'space-between',
+        bgcolor: '#1976d2',
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: '1.25rem',
+        py: 2.5,
+        position: 'sticky',
+        top: 0,
+        zIndex: 1000
+      }}>
+        <Box>
+          {isEditing ? 'Edit Product' : 'Add New Product'}
+        </Box>
+        <IconButton onClick={onClose} size="small" sx={{ color: 'white' }}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
 
       <form onSubmit={handleSubmit}>
-        <DialogContent dividers>
-          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 3 }}>
-            {/* Product Image */}
-            <Box sx={{ gridColumn: 'span 12' }}>
-              <Box
+        <DialogContent sx={{ pt: 3, pb: 2 }}>
+          <Collapse in={!!formError}>
+            <Alert 
+              severity="error" 
+              sx={{ mb: 2 }}
+              icon={<ErrorIcon />}
+              onClose={() => setFormError('')}
+            >
+              {formError}
+            </Alert>
+          </Collapse>
+          
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+            
+            {/* Image Section */}
+            <Box>
+              <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 1.5, color: '#333' }}>
+                Product Image
+              </Typography>
+              <Paper
                 sx={{
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
                   gap: 2,
-                  mb: 2,
+                  p: 3,
+                  bgcolor: '#f5f5f5',
+                  border: getFieldError('thumbnail') ? '2px solid #d32f2f' : '2px dashed #1976d2',
+                  borderRadius: 1.5,
                 }}
               >
                 {formData.thumbnail ? (
@@ -157,218 +320,263 @@ const ProductForm = ({ open, onClose, onSubmit, initialData, isEditing }) => {
                     component="img"
                     src={formData.thumbnail}
                     alt="Product thumbnail"
+                    onError={handleImageError}
                     sx={{
-                      width: 200,
-                      height: 200,
+                      width: 120,
+                      height: 120,
                       objectFit: 'cover',
-                      borderRadius: 2,
-                      border: '1px solid',
-                      borderColor: 'divider',
+                      borderRadius: 1,
+                      border: '2px solid #1976d2',
                     }}
                   />
                 ) : (
-                  <Box
-                    sx={{
-                      width: 200,
-                      height: 200,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      border: '2px dashed',
-                      borderColor: 'divider',
-                      borderRadius: 2,
-                      bgcolor: 'action.hover',
-                    }}
-                  >
-                    <AddPhotoAlternate sx={{ fontSize: 48, color: 'action.active' }} />
+                  <Box sx={{ textAlign: 'center', py: 1 }}>
+                    <AddPhotoAlternate sx={{ fontSize: 48, color: '#1976d2', opacity: 0.6, mb: 1 }} />
+                    <Typography variant="caption" color="textSecondary">
+                      Enter image URL below
+                    </Typography>
                   </Box>
                 )}
-                <Typography variant="caption" color="text.secondary">
-                  Product Thumbnail Preview
-                </Typography>
-              </Box>
+              </Paper>
+              <TextField
+                fullWidth
+                name="thumbnail"
+                label="Image URL"
+                placeholder="https://example.com/image.jpg"
+                value={formData.thumbnail}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={!!getFieldError('thumbnail')}
+                helperText={getFieldError('thumbnail')}
+                size="small"
+                sx={{ mt: 1.5 }}
+                InputProps={{
+                  endAdornment: getFieldError('thumbnail') && (
+                    <ErrorIcon color="error" sx={{ fontSize: 20, mr: 1 }} />
+                  ),
+                }}
+              />
             </Box>
 
+            <Divider sx={{ my: 1 }} />
+
             {/* Basic Information */}
-            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 8' } }}>
+            <Box>
+              <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 1.5, color: '#333' }}>
+                Basic Information
+              </Typography>
               <TextField
                 fullWidth
                 name="title"
                 label="Product Title"
                 value={formData.title}
                 onChange={handleChange}
-                error={!!errors.title}
-                helperText={errors.title}
-                required
-                margin="normal"
+                onBlur={handleBlur}
+                error={!!getFieldError('title')}
+                helperText={getFieldError('title')}
+                size="small"
+                sx={{ mb: 2 }}
+                InputProps={{
+                  endAdornment: getFieldError('title') && (
+                    <ErrorIcon color="error" sx={{ fontSize: 20, mr: 1 }} />
+                  ),
+                }}
               />
-              
+
               <TextField
                 fullWidth
                 name="description"
                 label="Description"
                 value={formData.description}
                 onChange={handleChange}
-                error={!!errors.description}
-                helperText={errors.description}
-                required
+                onBlur={handleBlur}
+                error={!!getFieldError('description')}
+                helperText={getFieldError('description')}
                 multiline
-                rows={4}
-                margin="normal"
+                rows={3}
+                size="small"
+                InputProps={{
+                  endAdornment: getFieldError('description') && (
+                    <ErrorIcon color="error" sx={{ fontSize: 20, mr: 1 }} />
+                  ),
+                }}
               />
             </Box>
 
-            {/* Pricing & Stock */}
-            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 4' } }}>
-              <TextField
-                fullWidth
-                name="price"
-                label="Price ($)"
-                type="number"
-                value={formData.price}
-                onChange={handleChange}
-                error={!!errors.price}
-                helperText={errors.price}
-                required
-                margin="normal"
-                InputProps={{ inputProps: { min: 0, step: 0.01 } }}
-              />
-              
-              <TextField
-                fullWidth
-                name="discountPercentage"
-                label="Discount (%)"
-                type="number"
-                value={formData.discountPercentage}
-                onChange={handleChange}
-                error={!!errors.discountPercentage}
-                helperText={errors.discountPercentage}
-                margin="normal"
-                InputProps={{ inputProps: { min: 0, max: 100 } }}
-              />
-            </Box>
+            <Divider sx={{ my: 1 }} />
 
-            {/* Category & Brand */}
-            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
-              <FormControl fullWidth margin="normal" error={!!errors.category}>
-                <InputLabel>Category *</InputLabel>
-                <Select
-                  name="category"
-                  value={formData.category}
-                  onChange={handleChange}
-                  label="Category *"
-                >
-                  {categories.map((category) => (
-                    <MenuItem key={category} value={category}>
-                      {category.charAt(0).toUpperCase() + category.slice(1)}
+            {/* Classification */}
+            <Box>
+              <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 1.5, color: '#333' }}>
+                Classification
+              </Typography>
+              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1.5 }}>
+                <FormControl fullWidth size="small" error={!!getFieldError('category')}>
+                  <InputLabel>Category</InputLabel>
+                  <Select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    label="Category"
+                  >
+                    <MenuItem value="">
+                      <em>Select Category</em>
                     </MenuItem>
-                  ))}
-                </Select>
-                {errors.category && (
-                  <Typography variant="caption" color="error">
-                    {errors.category}
-                  </Typography>
-                )}
-              </FormControl>
-            </Box>
+                    {categories.map((category) => (
+                      <MenuItem key={category} value={category}>
+                        {category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' ')}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {getFieldError('category') && (
+                    <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 0.5, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                      <ErrorIcon sx={{ fontSize: 16 }} />
+                      {getFieldError('category')}
+                    </Typography>
+                  )}
+                </FormControl>
 
-            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
-              <FormControl fullWidth margin="normal" error={!!errors.brand}>
-                <InputLabel>Brand *</InputLabel>
-                <Select
-                  name="brand"
-                  value={formData.brand}
-                  onChange={handleChange}
-                  label="Brand *"
-                >
-                  {brands.map((brand) => (
-                    <MenuItem key={brand} value={brand}>
-                      {brand}
+                <FormControl fullWidth size="small" error={!!getFieldError('brand')}>
+                  <InputLabel>Brand</InputLabel>
+                  <Select
+                    name="brand"
+                    value={formData.brand}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    label="Brand"
+                  >
+                    <MenuItem value="">
+                      <em>Select Brand</em>
                     </MenuItem>
-                  ))}
-                </Select>
-                {errors.brand && (
-                  <Typography variant="caption" color="error">
-                    {errors.brand}
-                  </Typography>
-                )}
-              </FormControl>
-            </Box>
-
-            {/* Rating & Stock */}
-            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
-              <TextField
-                fullWidth
-                name="rating"
-                label="Rating (0-5)"
-                type="number"
-                value={formData.rating}
-                onChange={handleChange}
-                error={!!errors.rating}
-                helperText={errors.rating}
-                margin="normal"
-                InputProps={{ inputProps: { min: 0, max: 5, step: 0.1 } }}
-              />
-            </Box>
-
-            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
-              <TextField
-                fullWidth
-                name="stock"
-                label="Stock Quantity"
-                type="number"
-                value={formData.stock}
-                onChange={handleChange}
-                error={!!errors.stock}
-                helperText={errors.stock}
-                required
-                margin="normal"
-                InputProps={{ inputProps: { min: 0 } }}
-              />
-            </Box>
-
-            {/* Thumbnail URL */}
-            <Box sx={{ gridColumn: 'span 12' }}>
-              <TextField
-                fullWidth
-                name="thumbnail"
-                label="Thumbnail Image URL"
-                value={formData.thumbnail}
-                onChange={handleChange}
-                error={!!errors.thumbnail}
-                helperText={errors.thumbnail || 'Enter a valid image URL'}
-                required
-                margin="normal"
-              />
-            </Box>
-
-            {/* Preview Note */}
-            {formData.thumbnail && (
-              <Box sx={{ gridColumn: 'span 12' }}>
-                <Alert severity="info" sx={{ mt: 2 }}>
-                  <Typography variant="body2">
-                    Make sure the image URL is valid. You can use placeholder images from{' '}
-                    <a 
-                      href="https://picsum.photos" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      style={{ color: 'inherit', textDecoration: 'underline' }}
-                    >
-                      Picsum Photos
-                    </a>{' '}
-                    or similar services.
-                  </Typography>
-                </Alert>
+                    {brands.map((brand) => (
+                      <MenuItem key={brand} value={brand}>
+                        {brand}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {getFieldError('brand') && (
+                    <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 0.5, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                      <ErrorIcon sx={{ fontSize: 16 }} />
+                      {getFieldError('brand')}
+                    </Typography>
+                  )}
+                </FormControl>
               </Box>
-            )}
+            </Box>
+
+            <Divider sx={{ my: 1 }} />
+
+            {/* Pricing */}
+            <Box>
+              <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 1.5, color: '#333' }}>
+                Pricing
+              </Typography>
+              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1.5 }}>
+                <TextField
+                  fullWidth
+                  name="price"
+                  label="Price ($)"
+                  type="number"
+                  value={formData.price}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={!!getFieldError('price')}
+                  helperText={getFieldError('price')}
+                  size="small"
+                  inputProps={{ min: 0, step: 0.01 }}
+                  InputProps={{
+                    startAdornment: '$',
+                    endAdornment: getFieldError('price') && (
+                      <ErrorIcon color="error" sx={{ fontSize: 20, mr: 1 }} />
+                    ),
+                  }}
+                />
+
+                <TextField
+                  fullWidth
+                  name="discountPercentage"
+                  label="Discount (%)"
+                  type="number"
+                  value={formData.discountPercentage}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={!!getFieldError('discountPercentage')}
+                  helperText={getFieldError('discountPercentage')}
+                  size="small"
+                  inputProps={{ min: 0, max: 100 }}
+                  InputProps={{
+                    endAdornment: '%',
+                  }}
+                />
+              </Box>
+            </Box>
+
+            <Divider sx={{ my: 1 }} />
+
+            {/* Inventory & Rating */}
+            <Box>
+              <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 1.5, color: '#333' }}>
+                Inventory & Rating
+              </Typography>
+              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1.5 }}>
+                <TextField
+                  fullWidth
+                  name="stock"
+                  label="Stock"
+                  type="number"
+                  value={formData.stock}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={!!getFieldError('stock')}
+                  helperText={getFieldError('stock')}
+                  size="small"
+                  inputProps={{ min: 0 }}
+                  InputProps={{
+                    endAdornment: getFieldError('stock') && (
+                      <ErrorIcon color="error" sx={{ fontSize: 20, mr: 1 }} />
+                    ),
+                  }}
+                />
+
+                <TextField
+                  fullWidth
+                  name="rating"
+                  label="Rating (0-5)"
+                  type="number"
+                  value={formData.rating}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={!!getFieldError('rating')}
+                  helperText={getFieldError('rating')}
+                  size="small"
+                  inputProps={{ min: 0, max: 5, step: 0.1 }}
+                />
+              </Box>
+            </Box>
           </Box>
         </DialogContent>
 
-        <DialogActions sx={{ p: 3 }}>
-          <Button onClick={onClose} color="inherit">
+        <DialogActions sx={{ p: 2, gap: 1, bgcolor: '#fafafa', position: 'sticky', bottom: 0 }}>
+          <Button 
+            onClick={onClose} 
+            variant="outlined"
+            sx={{ textTransform: 'none' }}
+          >
             Cancel
           </Button>
-          <Button type="submit" variant="contained" color="primary">
+          <Button 
+            type="submit" 
+            variant="contained" 
+            sx={{ 
+              bgcolor: '#1976d2',
+              textTransform: 'none',
+              fontWeight: 'bold',
+              '&:hover': { bgcolor: '#1565c0' },
+              '&:disabled': { bgcolor: '#b0bec5' }
+            }}
+            disabled={Object.keys(errors).some(key => errors[key])}
+          >
             {isEditing ? 'Update Product' : 'Create Product'}
           </Button>
         </DialogActions>
