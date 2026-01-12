@@ -10,7 +10,7 @@ import {
   ListItemText,
 } from '@mui/material';
 import { ShoppingCart, LocalShipping, Payment } from '@mui/icons-material';
-import { useCart } from '../../contexts/CartContext';
+import { useCart } from '../../hooks/contexts/CartContexts';
 
 const CartSummary = ({ onCheckout, showItems = false }) => {
   const { cart, getCartTotal, getCartCount } = useCart();
