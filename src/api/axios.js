@@ -27,7 +27,8 @@ export const productAPI = {
     getAll: (params = {}) => apiInstance.get('/products', {params}),
     getById: (id) => apiInstance.get(`/products/${id}`),
     getCategories: () => apiInstance.get('/products/categories'),
-    getByCategory: (category) => apiInstance.get(`/products/categories/${category}`),
+    getByCategory: (category) => apiInstance.get(`/products/category/${category}`),
+    search: (query) => apiInstance.get(`/products/search`, { params: { q: query } }),
 
     // Crud
 
