@@ -3,7 +3,8 @@ import { useAuth } from '../../hooks/contexts/AuthContext';
 import { CircularProgress, Box} from '@mui/material';
 
 const ProtectedRoute = ({ children }) =>{
-    const { isAuthenticated, loading } = useAuth();
+    const { loading } = useAuth();
+    const token = localStorage.getItem('token');
 
     if (loading){
         return (
@@ -11,13 +12,13 @@ const ProtectedRoute = ({ children }) =>{
                 <CircularProgress />
             </Box>
         );
-        
     }
 
-if (!isAuthenticated) {
-    return <Navigate to="/login" />;
-}
-return children;
+    if (!token) {
+        return <Navigate to="/login" />;
+    }
+    
+    return children;
 };
 
 export default ProtectedRoute;
