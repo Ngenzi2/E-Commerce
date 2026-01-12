@@ -5,6 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { AuthProvider } from './hooks/contexts/AuthContext';
 import { CartProvider } from './hooks/contexts/CartContexts';
 import { WishlistProvider } from './hooks/contexts/WishlistContext';
+import { ProductProvider } from './hooks/contexts/ProductContext';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import ProtectedRoute from './components/layout/ProtectedRoute';
@@ -33,33 +34,35 @@ function App() {
       <CssBaseline />
       <Router>
         <AuthProvider>
-          <CartProvider>
-            <WishlistProvider>
-              <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-                <Navbar />
-                <main style={{ flex: 1, padding: '20px' }}>
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/products" element={<Products />} />
-                    <Route path="/products/:id" element={<ProductDetails />} />
-                    <Route path="/cart" element={<Cart />} />
-                    <Route path="/wishlist" element={<Wishlist />} />
-                    <Route
-                      path="/dashboard"
-                      element={
-                        <ProtectedRoute>
-                          <Dashboard />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route path="*" element={<Navigate to="/" />} />
-                  </Routes>
-                </main>
-                <Footer />
-              </div>
-            </WishlistProvider>
-          </CartProvider>
+          <ProductProvider>
+            <CartProvider>
+              <WishlistProvider>
+                <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+                  <Navbar />
+                  <main style={{ flex: 1, padding: '20px' }}>
+                    <Routes>
+                      <Route path="/" element={<Home />} />
+                      <Route path="/login" element={<Login />} />
+                      <Route path="/products" element={<Products />} />
+                      <Route path="/products/:id" element={<ProductDetails />} />
+                      <Route path="/cart" element={<Cart />} />
+                      <Route path="/wishlist" element={<Wishlist />} />
+                      <Route
+                        path="/dashboard"
+                        element={
+                          <ProtectedRoute>
+                            <Dashboard />
+                          </ProtectedRoute>
+                        }
+                      />
+                      <Route path="*" element={<Navigate to="/" />} />
+                    </Routes>
+                  </main>
+                  <Footer />
+                </div>
+              </WishlistProvider>
+            </CartProvider>
+          </ProductProvider>
         </AuthProvider>
       </Router>
     </ThemeProvider>
