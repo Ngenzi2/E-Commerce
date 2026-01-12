@@ -9,6 +9,10 @@ export const ProductProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    
+    
+
+
     const value = {
         products,
         setProducts,
