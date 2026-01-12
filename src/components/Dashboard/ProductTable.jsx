@@ -109,7 +109,7 @@ const ProductTable = ({ products, loading, onEdit, onDelete }) => {
   }
 
   return (
-    <>
+    <Box>
       <Paper sx={{ mb: 3, p: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
         <TextField
           fullWidth
@@ -280,24 +280,26 @@ const ProductTable = ({ products, loading, onEdit, onDelete }) => {
       />
 
       {/* Product Menu */}
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-      >
-        <MenuItem onClick={handleView}>
-          <ViewIcon fontSize="small" sx={{ mr: 1 }} />
-          View Details
-        </MenuItem>
-        <MenuItem onClick={handleEdit}>
-          <EditIcon fontSize="small" sx={{ mr: 1 }} />
-          Edit Product
-        </MenuItem>
-        <MenuItem onClick={handleDelete} sx={{ color: 'error.main' }}>
-          <DeleteIcon fontSize="small" sx={{ mr: 1 }} />
-          Delete Product
-        </MenuItem>
-      </Menu>
+      {selectedProduct && (
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+        >
+          <MenuItem onClick={handleView}>
+            <ViewIcon fontSize="small" sx={{ mr: 1 }} />
+            View Details
+          </MenuItem>
+          <MenuItem onClick={handleEdit}>
+            <EditIcon fontSize="small" sx={{ mr: 1 }} />
+            Edit Product
+          </MenuItem>
+          <MenuItem onClick={handleDelete} sx={{ color: 'error.main' }}>
+            <DeleteIcon fontSize="small" sx={{ mr: 1 }} />
+            Delete Product
+          </MenuItem>
+        </Menu>
+      )}
 
       {/* View Product Dialog */}
       <Dialog
@@ -409,7 +411,29 @@ const ProductTable = ({ products, loading, onEdit, onDelete }) => {
           </>
         )}
       </Dialog>
-    </>
+
+      {/* Product Menu */}
+      {selectedProduct && (
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+        >
+          <MenuItem onClick={handleView}>
+            <ViewIcon fontSize="small" sx={{ mr: 1 }} />
+            View Details
+          </MenuItem>
+          <MenuItem onClick={handleEdit}>
+            <EditIcon fontSize="small" sx={{ mr: 1 }} />
+            Edit Product
+          </MenuItem>
+          <MenuItem onClick={handleDelete} sx={{ color: 'error.main' }}>
+            <DeleteIcon fontSize="small" sx={{ mr: 1 }} />
+            Delete Product
+          </MenuItem>
+        </Menu>
+      )}
+    </Box>
   );
 };
 
