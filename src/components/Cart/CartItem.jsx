@@ -55,11 +55,11 @@ const CartItem = ({ item }) => {
   return (
     <Box
       sx={{
-        p: 2,
+        p: 1.5,
         borderRadius: 2,
         border: '1px solid',
         borderColor: 'divider',
-        mb: 2,
+        mb: 1.5,
         bgcolor: 'background.paper',
         transition: 'all 0.3s',
         '&:hover': {
@@ -73,8 +73,8 @@ const CartItem = ({ item }) => {
           component={Link}
           to={`/products/${item.id}`}
           sx={{
-            width: 120,
-            height: 120,
+            width: 100,
+            height: 100,
             borderRadius: 2,
             overflow: 'hidden',
             flexShrink: 0,
@@ -99,14 +99,16 @@ const CartItem = ({ item }) => {
 
         {/* Product Details */}
         <Box sx={{ flex: 1 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
             <Typography
               component={Link}
               to={`/products/${item.id}`}
-              variant="h6"
+              variant="subtitle1"
               sx={{
                 textDecoration: 'none',
                 color: 'text.primary',
+                fontWeight: 600,
+                fontSize: '1rem',
                 '&:hover': { color: 'primary.main' },
               }}
             >
@@ -136,11 +138,11 @@ const CartItem = ({ item }) => {
             </Box>
           </Box>
 
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+          <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
             {item.brand} • {item.category}
           </Typography>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, gap: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5, gap: 1 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
               <Typography variant="body2" color="text.secondary">
                 Rating:
