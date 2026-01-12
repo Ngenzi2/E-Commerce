@@ -226,14 +226,14 @@ const Navbar = () => {
                     },
                   }}
                 >
-                  <Box sx={{ px: 2, py: 1.5 }}>
+                  <MenuItem disabled sx={{ flexDirection: 'column', alignItems: 'flex-start', py: 1.5 }}>
                     <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
                       {user?.firstName} {user?.lastName}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
                       {user?.email}
                     </Typography>
-                  </Box>
+                  </MenuItem>
                   <Divider />
                   <MenuItem
                     component={Link}
