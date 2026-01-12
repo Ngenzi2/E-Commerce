@@ -32,7 +32,7 @@ const ProductForm = ({ open, onClose, onSubmit, initialData, isEditing }) => {
   });
 
   const [errors, setErrors] = useState({});
-  const [categories, setCategories] = useState([
+  const [categories] = useState([
     'smartphones', 'laptops', 'fragrances', 'skincare', 'groceries',
     'home-decoration', 'furniture', 'tops', 'womens-dresses',
     'womens-shoes', 'mens-shirts', 'mens-shoes', 'mens-watches',
@@ -40,39 +40,39 @@ const ProductForm = ({ open, onClose, onSubmit, initialData, isEditing }) => {
     'sunglasses', 'automotive', 'motorcycle', 'lighting'
   ]);
 
-  const [brands, setBrands] = useState([
+  const brands = [
     'Apple', 'Samsung', 'Microsoft', 'Lenovo', 'Asus',
     'Dell', 'HP', 'Sony', 'LG', 'Google', 'Xiaomi',
     'OnePlus', 'Nokia', 'OPPO', 'Vivo', 'Realme',
     'Puma', 'Nike', 'Adidas', 'Reebok', 'Zara'
-  ]);
+  ];
 
   useEffect(() => {
-    if (initialData) {
-      setFormData({
-        title: initialData.title || '',
-        description: initialData.description || '',
-        price: initialData.price || '',
-        discountPercentage: initialData.discountPercentage || '',
-        rating: initialData.rating || '',
-        stock: initialData.stock || '',
-        brand: initialData.brand || '',
-        category: initialData.category || '',
-        thumbnail: initialData.thumbnail || '',
-      });
-    } else {
-      setFormData({
-        title: '',
-        description: '',
-        price: '',
-        discountPercentage: '',
-        rating: '',
-        stock: '',
-        brand: '',
-        category: '',
-        thumbnail: '',
-      });
-    }
+    const defaultFormData = {
+      title: '',
+      description: '',
+      price: '',
+      discountPercentage: '',
+      rating: '',
+      stock: '',
+      brand: '',
+      category: '',
+      thumbnail: '',
+    };
+
+    const newFormData = initialData ? {
+      title: initialData.title || '',
+      description: initialData.description || '',
+      price: initialData.price || '',
+      discountPercentage: initialData.discountPercentage || '',
+      rating: initialData.rating || '',
+      stock: initialData.stock || '',
+      brand: initialData.brand || '',
+      category: initialData.category || '',
+      thumbnail: initialData.thumbnail || '',
+    } : defaultFormData;
+
+    setFormData(newFormData);
     setErrors({});
   }, [initialData, open]);
 
