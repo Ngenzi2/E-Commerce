@@ -1,16 +1,92 @@
-# React + Vite
+# E-Commerce Store (React + Vite)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A small e-commerce frontend scaffolded for study and challenge purposes. Built with React, Vite and Material UI, it demonstrates product listing, filters, cart/wishlist, and a simple dashboard UI.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Product listing with filters
+- Product details view
+- Cart and wishlist management
+- Dashboard views: product form and product table
+- Authentication scaffolding via React context
+- Responsive UI using Material UI components
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+- React 19
+- Vite
+- Material UI (`@mui/material`, `@mui/icons-material`)
+- React Router (`react-router-dom`)
+- Axios for API requests
+- Tailwind
 
-## Expanding the ESLint configuration
+## Quick Start
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Prerequisites: Node.js 18+ and npm (or yarn).
+
+1. Install dependencies
+
+```bash
+npm install
+# or: yarn
+```
+
+2. Start dev server
+
+```bash
+npm run dev
+```
+
+3. Build for production
+
+```bash
+npm run build
+```
+
+4. Preview production build locally
+
+```bash
+npm run preview
+```
+
+## Scripts
+
+- `dev` — run Vite dev server
+- `build` — build the app for production
+- `preview` — locally preview the production build
+- `lint` — run ESLint
+
+These scripts come from `package.json`.
+
+## Project Structure
+
+- `src/` — application source
+  - `api/` — Axios instance and API helpers (`src/api/axios.js`)
+  - `assets/` — static images and assets
+  - `components/` — reusable UI components
+    - `layout/` — `Navbar`, `Footer`, `ProtectedRoute`
+    - `Products/` — `ProductCard`, `ProductFilters`, etc.
+    - `Cart/`, `Dashboard/` — cart UI and admin UI
+  - `hooks/contexts/` — React contexts (`AuthContext`, `CartContexts`, `ProductContext`, `WishlistContext`)
+  - `pages/` — route pages: `Home`, `Products`, `ProductDetails`, `Cart`, `Wishlist`, `Dashboard`, `Login`
+  - `main.jsx` — app bootstrap and router
+
+## Environment & API
+
+The app expects a backend or public API for product data. Configure the base URL and endpoints in `src/api/axios.js`.
+
+## Notes
+
+- Material UI is used for components and layout; styling uses the MUI `sx` prop and Tailwind classes.
+- Authentication is a context-based scaffold — replace with your auth flow if required.
+- The project includes ESLint configuration; run `npm run lint` before committing.
+
+## Contributing
+
+- Fork the repo and create a branch per feature/fix
+- Run the dev server and add tests where appropriate
+- Open a pull request with a clear description
+
+## License
+
+This repository is provided for study and demonstration purposes. No license is declared.
