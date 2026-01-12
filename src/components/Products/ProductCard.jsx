@@ -11,7 +11,7 @@ import {
   Rating,
 
 } from '@mui/material';
-import {AddShoppingCart, FavoriteBorder } from '@mui/icons=material';
-import { useCart } from  '../../contexts/ CartContextt';
-import {useWishlist } from '../../contexts/wishlistContext';
+import {AddShoppingCart, FavoriteBorder } from '@mui/icons-material';
+import { useCart } from '../../hooks/contexts/CartContexts';
+import { useWishlist } from '../../hooks/contexts/WishlistContext';
 import { Link } from 'react-router-dom';
