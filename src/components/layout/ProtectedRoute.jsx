@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../hooks/contexts/AuthContext';
 import { CircularProgress, Box} from '@mui/material';
 
 const ProtectedRoute = ({ children }) =>{
@@ -7,17 +7,16 @@ const ProtectedRoute = ({ children }) =>{
 
     if (loading){
         return (
-            <Box display="flex" justifyContext="center" alignItems= "center" minHeight= "60vh">
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
                 <CircularProgress />
-                </Box>
+            </Box>
         );
         
     }
 
 if (!isAuthenticated) {
-    return <Navigate to= "/login" />;
-
-} 
+    return <Navigate to="/login" />;
+}
 return children;
 };
 
