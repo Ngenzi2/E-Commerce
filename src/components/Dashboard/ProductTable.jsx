@@ -110,34 +110,35 @@ const ProductTable = ({ products, loading, onEdit, onDelete }) => {
 
   return (
     <>
-      <Box sx={{ mb: 3 }}>
+      <Paper sx={{ mb: 3, p: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
         <TextField
           fullWidth
-          placeholder="Search products..."
+          placeholder="Search products by name, brand, or category..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <SearchIcon />
+                <SearchIcon sx={{ color: '#1976d2' }} />
               </InputAdornment>
             ),
           }}
-          sx={{ maxWidth: 400 }}
+          variant="outlined"
+          size="small"
         />
-      </Box>
+      </Paper>
 
-      <TableContainer component={Paper} elevation={0}>
+      <TableContainer component={Paper} sx={{ boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
         <Table>
           <TableHead>
-            <TableRow>
-              <TableCell>Product</TableCell>
-              <TableCell align="right">Price</TableCell>
-              <TableCell align="center">Stock</TableCell>
-              <TableCell align="center">Rating</TableCell>
-              <TableCell align="center">Discount</TableCell>
-              <TableCell align="center">Category</TableCell>
-              <TableCell align="right">Actions</TableCell>
+            <TableRow sx={{ bgcolor: '#f5f5f5' }}>
+              <TableCell sx={{ fontWeight: 'bold', color: '#1976d2' }}>Product</TableCell>
+              <TableCell align="right" sx={{ fontWeight: 'bold', color: '#1976d2' }}>Price</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold', color: '#1976d2' }}>Stock</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold', color: '#1976d2' }}>Rating</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold', color: '#1976d2' }}>Discount</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold', color: '#1976d2' }}>Category</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 'bold', color: '#1976d2' }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -227,8 +228,8 @@ const ProductTable = ({ products, loading, onEdit, onDelete }) => {
                     variant="outlined"
                   />
                 </TableCell>
-                <TableCell align="right">
-                  <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+                <TableCell align="center">
+                  <Box sx={{ display: 'flex', justifyContent: 'center', gap: 0.5 }}>
                     <Tooltip title="View">
                       <IconButton
                         size="small"
@@ -236,6 +237,7 @@ const ProductTable = ({ products, loading, onEdit, onDelete }) => {
                           setSelectedProduct(product);
                           setViewDialogOpen(true);
                         }}
+                        sx={{ color: '#1976d2' }}
                       >
                         <ViewIcon fontSize="small" />
                       </IconButton>
@@ -244,16 +246,18 @@ const ProductTable = ({ products, loading, onEdit, onDelete }) => {
                       <IconButton
                         size="small"
                         onClick={() => onEdit(product)}
+                        sx={{ color: '#f57c00' }}
                       >
                         <EditIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title="More options">
+                    <Tooltip title="Delete">
                       <IconButton
                         size="small"
                         onClick={(e) => handleMenuClick(e, product)}
+                        sx={{ color: '#d32f2f' }}
                       >
-                        <MoreVertIcon fontSize="small" />
+                        <DeleteIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>
                   </Box>
