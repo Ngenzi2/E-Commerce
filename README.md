@@ -49,6 +49,9 @@ npm run build
 npm run preview
 ```
 
+5. Live Demo: use this link
+   https://e-commerce-gules-five.vercel.app/
+
 ## Scripts
 
 - `dev` — run Vite dev server
