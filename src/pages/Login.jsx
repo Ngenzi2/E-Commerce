@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Container,
   Paper,
@@ -17,18 +17,29 @@ const Login = () => {
     password: '',
   });
   const [error, setError] = useState('');
-  const { login } = useAuth();
+  const { login, isAuthenticated, loading } = useAuth();
   const navigate = useNavigate();
+
+  // Redirect to dashboard if already logged in
+  useEffect(() => {
+    if (!loading && isAuthenticated) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, loading, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    console.log('Login attempt with credentials:', { username: credentials.username });
     
     const result = await login(credentials);
+    console.log('Login result:', result);
     
     if (result.success) {
-      navigate('/dashboard');
+      console.log('Login successful, redirecting to dashboard...');
+      navigate('/dashboard', { replace: true });
     } else {
+      console.log('Login failed:', result.message);
       setError(result.message || 'Login failed');
     }
   };
@@ -39,6 +50,17 @@ const Login = () => {
       [e.target.name]: e.target.value,
     });
   };
+
+  // Show loading while checking authentication
+  if (loading) {
+    return (
+      <Container maxWidth="sm">
+        <Box sx={{ mt: 8, mb: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+          <Typography>Loading...</Typography>
+        </Box>
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="sm">
