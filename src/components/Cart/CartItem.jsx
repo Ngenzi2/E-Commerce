@@ -14,8 +14,8 @@ import {
   Remove as RemoveIcon,
   Favorite as FavoriteIcon,
 } from '@mui/icons-material';
-import { useCart } from '../../contexts/CartContext';
-import { useWishlist } from '../../contexts/WishlistContext';
+import { useCart } from '../../hooks/contexts/CartContexts';
+import { useWishlist } from '../../hooks/contexts/WishlistContext';
 import { Link } from 'react-router-dom';
 
 const CartItem = ({ item }) => {
