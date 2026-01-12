@@ -78,7 +78,7 @@ const Login = () => {
               onChange={handleChange}
               margin="normal"
               required
-              helperText="Use '0lelplR' for dummy accounts"
+              helperText="Use 'emilyspass' for dummy accounts"
             />
             
             <Button
@@ -92,7 +92,7 @@ const Login = () => {
             </Button>
             
             <Typography variant="body2" align="center" color="text.secondary">
-              Demo credentials: username: 'emilys', password: '0lelplR'
+              Demo credentials: username: 'emilys', password: 'emilyspass'
             </Typography>
           </form>
         </Paper>

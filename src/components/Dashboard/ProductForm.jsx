@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -47,7 +47,19 @@ const ProductForm = ({ open, onClose, onSubmit, initialData, isEditing }) => {
     'Puma', 'Nike', 'Adidas', 'Reebok', 'Zara'
   ];
 
+  // Use a ref to track if this is the initial mount
+  const isInitialMount = useRef(true);
+
   useEffect(() => {
+    // Skip the initial mount to avoid setting state synchronously
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    // Only run this effect when open changes from false to true
+    if (!open) return;
+
     const defaultFormData = {
       title: '',
       description: '',
@@ -72,8 +84,14 @@ const ProductForm = ({ open, onClose, onSubmit, initialData, isEditing }) => {
       thumbnail: initialData.thumbnail || '',
     } : defaultFormData;
 
-    setFormData(newFormData);
-    setErrors({});
+    queueMicrotask(() => {
+      setFormData(newFormData);
+      setErrors({});
+    });
+    
+    return () => {
+      // Cleanup if needed
+    };
   }, [initialData, open]);
 
   const validateForm = () => {
