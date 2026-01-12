@@ -165,6 +165,75 @@ const ProductForm = ({ open, onClose, onSubmit, initialData, isEditing }) => {
     setErrors(prev => ({ ...prev, [name]: error }));
   };
 
+  const validateField = (fieldName, value) => {
+    const trimmedValue = String(value).trim();
+    
+    switch (fieldName) {
+      case 'title':
+        if (!trimmedValue) return 'Title is required';
+        if (trimmedValue.length < 3) return 'Title must be at least 3 characters';
+        if (trimmedValue.length > 100) return 'Title must be less than 100 characters';
+        return '';
+      
+      case 'description':
+        if (!trimmedValue) return 'Description is required';
+        if (trimmedValue.length < 10) return 'Description must be at least 10 characters';
+        if (trimmedValue.length > 500) return 'Description must be less than 500 characters';
+        return '';
+      
+      case 'price':
+        if (!trimmedValue) return 'Price is required';
+        const price = parseFloat(trimmedValue);
+        if (isNaN(price)) return 'Price must be a valid number';
+        if (price < 0) return 'Price cannot be negative';
+        if (price > 999999) return 'Price is too high';
+        return '';
+      
+      case 'discountPercentage':
+        if (trimmedValue) {
+          const discount = parseFloat(trimmedValue);
+          if (isNaN(discount)) return 'Discount must be a valid number';
+          if (discount < 0 || discount > 100) return 'Discount must be between 0 and 100';
+        }
+        return '';
+      
+      case 'stock':
+        if (!trimmedValue) return 'Stock is required';
+        const stock = parseInt(trimmedValue);
+        if (isNaN(stock)) return 'Stock must be a valid number';
+        if (stock < 0) return 'Stock cannot be negative';
+        return '';
+      
+      case 'rating':
+        if (trimmedValue) {
+          const rating = parseFloat(trimmedValue);
+          if (isNaN(rating)) return 'Rating must be a valid number';
+          if (rating < 0 || rating > 5) return 'Rating must be between 0 and 5';
+        }
+        return '';
+      
+      case 'category':
+        if (!trimmedValue) return 'Category is required';
+        return '';
+      
+      case 'brand':
+        if (!trimmedValue) return 'Brand is required';
+        return '';
+      
+      case 'thumbnail':
+        if (!trimmedValue) return 'Image URL is required';
+        try {
+          new URL(trimmedValue);
+        } catch {
+          return 'Please enter a valid URL';
+        }
+        return '';
+      
+      default:
+        return '';
+    }
+  };
+
   const getFieldError = (fieldName) => {
     return touched[fieldName] ? errors[fieldName] : '';
   };
@@ -507,7 +576,7 @@ const ProductForm = ({ open, onClose, onSubmit, initialData, isEditing }) => {
               '&:hover': { bgcolor: '#1565c0' },
               '&:disabled': { bgcolor: '#b0bec5' }
             }}
-            disabled={Object.keys(errors).some(key => errors[key])}
+            disabled={Object.keys(errors).some(key => errors[key]) || !formData.title || !formData.description || !formData.price || !formData.stock || !formData.category || !formData.brand || !formData.thumbnail}
           >
             {isEditing ? 'Update Product' : 'Create Product'}
           </Button>
