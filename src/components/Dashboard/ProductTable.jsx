@@ -323,70 +323,70 @@ const ProductTable = ({ products, loading, onEdit, onDelete }) => {
                 />
               </Box>
               
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
+              <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
+                <Box sx={{ gridColumn: 'span 2' }}>
                   <Typography variant="h6" gutterBottom>
                     {selectedProduct.title}
                   </Typography>
                   <Typography variant="body2" color="text.secondary" paragraph>
                     {selectedProduct.description}
                   </Typography>
-                </Grid>
+                </Box>
                 
-                <Grid item xs={6}>
+                <Box>
                   <Typography variant="body2" color="text.secondary">
                     Brand
                   </Typography>
                   <Typography variant="body1">
                     {selectedProduct.brand}
                   </Typography>
-                </Grid>
+                </Box>
                 
-                <Grid item xs={6}>
+                <Box>
                   <Typography variant="body2" color="text.secondary">
                     Category
                   </Typography>
                   <Typography variant="body1">
                     {selectedProduct.category}
                   </Typography>
-                </Grid>
+                </Box>
                 
-                <Grid item xs={6}>
+                <Box>
                   <Typography variant="body2" color="text.secondary">
                     Price
                   </Typography>
                   <Typography variant="body1">
                     ${selectedProduct.price}
                   </Typography>
-                </Grid>
+                </Box>
                 
-                <Grid item xs={6}>
+                <Box>
                   <Typography variant="body2" color="text.secondary">
                     Discount
                   </Typography>
                   <Typography variant="body1">
                     {selectedProduct.discountPercentage}%
                   </Typography>
-                </Grid>
+                </Box>
                 
-                <Grid item xs={6}>
+                <Box>
                   <Typography variant="body2" color="text.secondary">
                     Rating
                   </Typography>
                   <Typography variant="body1">
                     {selectedProduct.rating} ⭐
                   </Typography>
-                </Grid>
+                </Box>
                 
-                <Grid item xs={6}>
+                <Box>
                   <Typography variant="body2" color="text.secondary">
                     Stock
                   </Typography>
                   <Typography variant="body1">
                     {selectedProduct.stock} units
                   </Typography>
-                </Grid>
-              </Grid>
+                </Box>
+              </Box>
             </DialogContent>
             <DialogActions>
               <Button onClick={() => setViewDialogOpen(false)}>

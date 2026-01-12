@@ -6,7 +6,6 @@ import {
   DialogActions,
   TextField,
   Button,
-  Grid,
   MenuItem,
   Typography,
   FormControl,
@@ -151,9 +150,7 @@ const ProductForm = ({ open, onClose, onSubmit, initialData, isEditing }) => {
       }}
     >
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Typography variant="h6">
-          {isEditing ? 'Edit Product' : 'Add New Product'}
-        </Typography>
+        {isEditing ? 'Edit Product' : 'Add New Product'}
         <IconButton onClick={onClose} size="small">
           <CloseIcon />
         </IconButton>
@@ -161,9 +158,9 @@ const ProductForm = ({ open, onClose, onSubmit, initialData, isEditing }) => {
 
       <form onSubmit={handleSubmit}>
         <DialogContent dividers>
-          <Grid container spacing={3}>
+          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 3 }}>
             {/* Product Image */}
-            <Grid item xs={12}>
+            <Box sx={{ gridColumn: 'span 12' }}>
               <Box
                 sx={{
                   display: 'flex',
@@ -208,10 +205,10 @@ const ProductForm = ({ open, onClose, onSubmit, initialData, isEditing }) => {
                   Product Thumbnail Preview
                 </Typography>
               </Box>
-            </Grid>
+            </Box>
 
             {/* Basic Information */}
-            <Grid item xs={12} md={8}>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 8' } }}>
               <TextField
                 fullWidth
                 name="title"
@@ -237,10 +234,10 @@ const ProductForm = ({ open, onClose, onSubmit, initialData, isEditing }) => {
                 rows={4}
                 margin="normal"
               />
-            </Grid>
+            </Box>
 
             {/* Pricing & Stock */}
-            <Grid item xs={12} md={4}>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 4' } }}>
               <TextField
                 fullWidth
                 name="price"
@@ -267,10 +264,10 @@ const ProductForm = ({ open, onClose, onSubmit, initialData, isEditing }) => {
                 margin="normal"
                 InputProps={{ inputProps: { min: 0, max: 100 } }}
               />
-            </Grid>
+            </Box>
 
             {/* Category & Brand */}
-            <Grid item xs={12} md={6}>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <FormControl fullWidth margin="normal" error={!!errors.category}>
                 <InputLabel>Category *</InputLabel>
                 <Select
@@ -291,9 +288,9 @@ const ProductForm = ({ open, onClose, onSubmit, initialData, isEditing }) => {
                   </Typography>
                 )}
               </FormControl>
-            </Grid>
+            </Box>
 
-            <Grid item xs={12} md={6}>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <FormControl fullWidth margin="normal" error={!!errors.brand}>
                 <InputLabel>Brand *</InputLabel>
                 <Select
@@ -314,10 +311,10 @@ const ProductForm = ({ open, onClose, onSubmit, initialData, isEditing }) => {
                   </Typography>
                 )}
               </FormControl>
-            </Grid>
+            </Box>
 
             {/* Rating & Stock */}
-            <Grid item xs={12} md={6}>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <TextField
                 fullWidth
                 name="rating"
@@ -330,9 +327,9 @@ const ProductForm = ({ open, onClose, onSubmit, initialData, isEditing }) => {
                 margin="normal"
                 InputProps={{ inputProps: { min: 0, max: 5, step: 0.1 } }}
               />
-            </Grid>
+            </Box>
 
-            <Grid item xs={12} md={6}>
+            <Box sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
               <TextField
                 fullWidth
                 name="stock"
@@ -346,10 +343,10 @@ const ProductForm = ({ open, onClose, onSubmit, initialData, isEditing }) => {
                 margin="normal"
                 InputProps={{ inputProps: { min: 0 } }}
               />
-            </Grid>
+            </Box>
 
             {/* Thumbnail URL */}
-            <Grid item xs={12}>
+            <Box sx={{ gridColumn: 'span 12' }}>
               <TextField
                 fullWidth
                 name="thumbnail"
@@ -361,11 +358,11 @@ const ProductForm = ({ open, onClose, onSubmit, initialData, isEditing }) => {
                 required
                 margin="normal"
               />
-            </Grid>
+            </Box>
 
             {/* Preview Note */}
             {formData.thumbnail && (
-              <Grid item xs={12}>
+              <Box sx={{ gridColumn: 'span 12' }}>
                 <Alert severity="info" sx={{ mt: 2 }}>
                   <Typography variant="body2">
                     Make sure the image URL is valid. You can use placeholder images from{' '}
@@ -380,9 +377,9 @@ const ProductForm = ({ open, onClose, onSubmit, initialData, isEditing }) => {
                     or similar services.
                   </Typography>
                 </Alert>
-              </Grid>
+              </Box>
             )}
-          </Grid>
+          </Box>
         </DialogContent>
 
         <DialogActions sx={{ p: 3 }}>

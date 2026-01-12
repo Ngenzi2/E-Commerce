@@ -90,7 +90,7 @@ const Products = () => {
         />
 
         <Grid container spacing={2} sx={{ mb: 2 }}>
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <FormControl fullWidth>
               <InputLabel>Sort By</InputLabel>
               <Select
@@ -104,7 +104,7 @@ const Products = () => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <FormControl fullWidth>
               <InputLabel>Order</InputLabel>
               <Select
@@ -120,15 +120,19 @@ const Products = () => {
         </Grid>
 
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
-          {categories.map((category) => (
-            <Chip
-              key={category}
-              label={category}
-              clickable
-              color={selectedCategory === category ? 'primary' : 'default'}
-              onClick={() => handleCategoryClick(category)}
-            />
-          ))}
+          {categories.map((category) => {
+            const categoryName = typeof category === 'string' ? category : category.name || category.slug || '';
+            const categoryKey = typeof category === 'string' ? category : category.slug || category.name || '';
+            return (
+              <Chip
+                key={categoryKey}
+                label={categoryName}
+                clickable
+                color={selectedCategory === categoryName ? 'primary' : 'default'}
+                onClick={() => handleCategoryClick(categoryName)}
+              />
+            );
+          })}
         </Box>
       </Box>
 
@@ -139,7 +143,7 @@ const Products = () => {
       ) : (
         <Grid container spacing={3}>
           {products.map((product) => (
-            <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
+            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={product.id}>
               <ProductCard product={product} />
             </Grid>
           ))}
