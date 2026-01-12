@@ -3,6 +3,8 @@ import { AuthAPI } from "../../api/axios";
 
 const AuthContext = createContext();
 
+export const useAuth = () => useContext(AuthContext);
+
 export const AuthProvider = ({children}) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -61,7 +63,6 @@ export const AuthProvider = ({children}) => {
         user,
         token,
         loading,
-        error,
         login,
         logout,
         isAuthenticated: !!token,
