@@ -41,12 +41,10 @@ export const AuthProvider = ({children}) => {
                 const storedUser = localStorage.getItem("user");
                 
                 if (storedToken && storedUser) {
-                    // If both token and user exist, trust them and don't validate
                     setToken(storedToken);
                     setUser(JSON.parse(storedUser));
                     console.log('Auth: Loaded from localStorage');
                 } else if (storedToken) {
-                    // Only token exists, try to validate and get user
                     setToken(storedToken);
                     try {
                         const response = await AuthAPI.getUser();

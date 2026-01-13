@@ -32,7 +32,7 @@ import { useWishlist } from '../../hooks/contexts/WishlistContext';
 const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null);
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, logout, token } = useAuth();
   const { getCartCount } = useCart();
   const { wishlist } = useWishlist();
   const navigate = useNavigate();
@@ -308,7 +308,7 @@ const Navbar = () => {
             }}
           >
             {isAuthenticated && (
-              <>
+              <Box>
                 <Box sx={{ px: 2, py: 1.5 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                     <Avatar sx={{ bgcolor: 'primary.main' }}>
@@ -325,7 +325,7 @@ const Navbar = () => {
                   </Box>
                 </Box>
                 <Divider />
-              </>
+              </Box>
             )}
             <MenuItem component={Link} to="/products" onClick={handleClose}>
               Products
@@ -351,7 +351,7 @@ const Navbar = () => {
               </MenuItem>
             )}
             {isAuthenticated && (
-              <>
+              <Box>
                 <MenuItem component={Link} to="/dashboard" onClick={handleClose}>
                   <Dashboard sx={{ mr: 2, fontSize: 20 }} />
                   Dashboard
@@ -361,10 +361,10 @@ const Navbar = () => {
                   <Logout sx={{ mr: 2, fontSize: 20 }} />
                   Logout
                 </MenuItem>
-              </>
+              </Box>
             )}
             {!isAuthenticated && (
-              <>
+              <Box>
                 <Divider />
                 <MenuItem
                   component={Link}
@@ -380,7 +380,7 @@ const Navbar = () => {
                 >
                   Login
                 </MenuItem>
-              </>
+              </Box>
             )}
           </Menu>
         </Toolbar>
