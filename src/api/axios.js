@@ -39,7 +39,8 @@ export const productAPI = {
 
 export const AuthAPI = {
     login: (credential) => apiInstance.post('/auth/login', credential),
-    getUser: () => apiInstance.get('/auth/me')
+    getUser: () => apiInstance.get('/auth/me'),
+    getAllUsers: () => apiInstance.get('/users')
 };
 
 export default apiInstance;

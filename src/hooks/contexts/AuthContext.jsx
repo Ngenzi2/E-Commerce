@@ -9,6 +9,30 @@ export const AuthProvider = ({children}) => {
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [users, setUsers] = useState([]);
+
+    // Fetch all users on initial mount
+    useEffect(() => {
+        fetchAllUsers();
+    }, []);
+
+    const fetchAllUsers = async () => {
+        try {
+            const response = await AuthAPI.getAllUsers();
+            const allUsers = response.data.users || response.data;
+            localStorage.setItem('allUsers', JSON.stringify(allUsers));
+            setUsers(allUsers);
+            console.log('All users fetched and stored in localStorage:', allUsers.length);
+        } catch (error) {
+            console.error('Error fetching all users:', error);
+            // Try to load from localStorage if fetch fails
+            const storedUsers = localStorage.getItem('allUsers');
+            if (storedUsers) {
+                setUsers(JSON.parse(storedUsers));
+                console.log('Loaded users from localStorage');
+            }
+        }
+    };
 
     useEffect(() => {
         const initAuth = async () => {
@@ -94,6 +118,8 @@ export const AuthProvider = ({children}) => {
         login,
         logout,
         isAuthenticated: !!token,
+        users,
+        fetchAllUsers,
     };
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 
