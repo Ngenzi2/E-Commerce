@@ -71,7 +71,7 @@ const Login = () => {
           </Typography>
           
           <Typography variant="body2" align="center" color="text.secondary" sx={{ mb: 3 }}>
-            Use any username from dummyjson.com (e.g., 'emilys', 'atuny0')
+            Use any username from dummyjson.com (e.g., 'emilys', 'emilyspass')
           </Typography>
 
           {error && (
@@ -100,7 +100,6 @@ const Login = () => {
               onChange={handleChange}
               margin="normal"
               required
-              helperText="Use 'emilyspass' for dummy accounts"
             />
             
             <Button
@@ -113,9 +112,6 @@ const Login = () => {
               Sign In
             </Button>
             
-            <Typography variant="body2" align="center" color="text.secondary">
-              Demo credentials: username: 'emilys', password: 'emilyspass'
-            </Typography>
           </form>
         </Paper>
       </Box>
