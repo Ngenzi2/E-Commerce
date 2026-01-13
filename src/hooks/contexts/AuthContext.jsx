@@ -1,4 +1,4 @@
-import {createContext, useState, useContext, useEffect} from "react";
+import {createContext, useState, useContext, useEffect, useMemo, useCallback} from "react";
 import { AuthAPI } from "../../api/axios";
 
 const AuthContext = createContext();
@@ -16,7 +16,7 @@ export const AuthProvider = ({children}) => {
         fetchAllUsers();
     }, []);
 
-    const fetchAllUsers = async () => {
+    const fetchAllUsers = useCallback(async () => {
         try {
             const response = await AuthAPI.getAllUsers();
             const allUsers = response.data.users || response.data;
@@ -32,7 +32,7 @@ export const AuthProvider = ({children}) => {
                 console.log('Loaded users from localStorage');
             }
         }
-    };
+    }, []);
 
     useEffect(() => {
         const initAuth = async () => {
@@ -74,7 +74,7 @@ export const AuthProvider = ({children}) => {
         initAuth();
     }, []);
 
-    const login = async (credentials) => {
+    const login = useCallback(async (credentials) => {
         try{
             console.log('AuthContext: Attempting login with:', { username: credentials.username });
             const response = await AuthAPI.login(credentials);
@@ -102,16 +102,16 @@ export const AuthProvider = ({children}) => {
             console.error('AuthContext: Login error:', error.response?.data || error.message);
             return {success: false, message: error.response?.data?.message || 'Login failed'};
         }
-    };
+    }, []);
 
-    const logout = () => {
+    const logout = useCallback(() => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         setToken(null);
         setUser(null);
-    }
+    }, []);
 
-    const value = {
+    const value = useMemo(() => ({
         user,
         token,
         loading,
@@ -120,7 +120,8 @@ export const AuthProvider = ({children}) => {
         isAuthenticated: !!token,
         users,
         fetchAllUsers,
-    };
+    }), [user, token, loading, login, logout, users, fetchAllUsers]);
+
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 
 };
