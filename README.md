@@ -50,7 +50,7 @@ npm run preview
 ```
 
 5. Live Demo: use this link
-   https://e-commerce-gules-five.vercel.app/
+https://solvit-e-commerce.netlify.app
 
 ## Scripts
 
