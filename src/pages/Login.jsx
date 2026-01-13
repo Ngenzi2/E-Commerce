@@ -1,4 +1,8 @@
-import React, { useState, useEffect } from 'react';
+// pages/Login.js
+import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../hooks/contexts/AuthContext';
+import { useProduct } from '../hooks/contexts/ProductContext';
 import {
   Container,
   Paper,
@@ -7,9 +11,8 @@ import {
   Typography,
   Box,
   Alert,
+  CircularProgress,
 } from '@mui/material';
-import { useAuth } from '../hooks/contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
@@ -17,30 +20,44 @@ const Login = () => {
     password: '',
   });
   const [error, setError] = useState('');
-  const { login, isAuthenticated, loading } = useAuth();
+  const [loading, setLoading] = useState(false);
+  
   const navigate = useNavigate();
+  const location = useLocation();
+  const { login, isAuthenticated } = useAuth();
+  const { fetchProducts } = useProduct();
 
-  // Redirect to dashboard if already logged in
-  useEffect(() => {
-    if (!loading && isAuthenticated) {
-      navigate('/dashboard', { replace: true });
+  // Redirect if already authenticated
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      const from = location.state?.from?.pathname || '/dashboard';
+      navigate(from, { replace: true });
     }
-  }, [isAuthenticated, loading, navigate]);
+  }, [isAuthenticated, navigate, location]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    console.log('Login attempt with credentials:', { username: credentials.username });
-    
-    const result = await login(credentials);
-    console.log('Login result:', result);
-    
-    if (result.success) {
-      console.log('Login successful, redirecting to dashboard...');
-      navigate('/dashboard', { replace: true });
-    } else {
-      console.log('Login failed:', result.message);
-      setError(result.message || 'Login failed');
+    setLoading(true);
+
+    try {
+      const result = await login(credentials);
+      
+      if (result.success) {
+        // After successful login, fetch products
+        await fetchProducts();
+        
+        // Redirect to dashboard
+        const from = location.state?.from?.pathname || '/dashboard';
+        navigate(from, { replace: true });
+      } else {
+        setError(result.message || 'Login failed');
+      }
+    } catch (err) {
+      setError('An unexpected error occurred');
+      console.error('Login error:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -51,16 +68,9 @@ const Login = () => {
     });
   };
 
-  // Show loading while checking authentication
-  if (loading) {
-    return (
-      <Container maxWidth="sm">
-        <Box sx={{ mt: 8, mb: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
-          <Typography>Loading...</Typography>
-        </Box>
-      </Container>
-    );
-  }
+  // Try these dummy credentials if needed:
+  // Username: kminchelle
+  // Password: 0lelplR
 
   return (
     <Container maxWidth="sm">
@@ -70,10 +80,6 @@ const Login = () => {
             Login
           </Typography>
           
-          <Typography variant="body2" align="center" color="text.secondary" sx={{ mb: 3 }}>
-            Use any username from dummyjson.com (e.g., 'emilys', 'emilyspass')
-          </Typography>
-
           {error && (
             <Alert severity="error" sx={{ mb: 2 }}>
               {error}
@@ -89,6 +95,7 @@ const Login = () => {
               onChange={handleChange}
               margin="normal"
               required
+              disabled={loading}
             />
             
             <TextField
@@ -100,19 +107,23 @@ const Login = () => {
               onChange={handleChange}
               margin="normal"
               required
+              disabled={loading}
             />
             
             <Button
               type="submit"
               fullWidth
               variant="contained"
-              size="large"
+              disabled={loading}
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign In
+              {loading ? <CircularProgress size={24} /> : 'Login'}
             </Button>
-            
           </form>
+
+          <Typography variant="body2" color="text.secondary" align="center">
+            Test credentials: kminchelle / 0lelplR
+          </Typography>
         </Paper>
       </Box>
     </Container>
