@@ -175,12 +175,6 @@ const ProductForm = ({ open, onClose, onSubmit, initialData, isEditing }) => {
         if (trimmedValue.length > 100) return 'Title must be less than 100 characters';
         return '';
       
-      case 'description':
-        if (!trimmedValue) return 'Description is required';
-        if (trimmedValue.length < 10) return 'Description must be at least 10 characters';
-        if (trimmedValue.length > 500) return 'Description must be less than 500 characters';
-        return '';
-      
       case 'price':
         if (!trimmedValue) return 'Price is required';
         const price = parseFloat(trimmedValue);
@@ -391,7 +385,6 @@ const ProductForm = ({ open, onClose, onSubmit, initialData, isEditing }) => {
                 value={formData.description}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                error={!!getFieldError('description')}
                 helperText={getFieldError('description')}
                 multiline
                 rows={3}
